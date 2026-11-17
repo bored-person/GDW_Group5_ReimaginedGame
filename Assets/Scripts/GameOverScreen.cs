@@ -25,4 +25,8 @@ public class GameOverScreen : MonoBehaviour
     Application.Quit();
 #endif 
     }
+    public void Menu()
+    {
+        SceneManager.LoadScene("TitleScreen");
+    }
 }
