@@ -30,28 +30,21 @@ public class Pokemon : MonoBehaviour
     public GameObject selfObject;
     [SerializeField] private string elementType1;
     [SerializeField] private string elementType2;
-    //[SerializeField] private int level = 1;
-    [SerializeField] public int currentHealth;
-    //[SerializeField] private int evoultionStage = 1;
+    [SerializeField] private float maxHealth = 100;
+    [SerializeField] public float currentHealth;
+
     [SerializeField] private GameObject healthBar;
     private float desiredHealthWidth;
     [Header("MOVES")]
-    [SerializeField] private GameObject move1;
-    [SerializeField] private GameObject move2;
-    [SerializeField] private GameObject move3;
-    [SerializeField] private GameObject move4;
+    [SerializeField] public GameObject move1;
+    [SerializeField] public GameObject move2;
+    [SerializeField] public GameObject move3;
+    [SerializeField] public GameObject move4;
 
     public List<GameObject> moveList = new List<GameObject>();
     private SpriteRenderer spriteRenderer;
 
 
-    [Header("STATS")]
-    [SerializeField] private int damageStat = 1;
-    //[SerializeField] private int speedStat = 1;
-    [SerializeField] private int defenseStat = 1;
-    //[SerializeField] private int specialAttackStat = 1;
-    //[SerializeField] private int specialDefenseStat = 1;
-    [SerializeField] private int maxHealth = 1;
     [Header("WEAK TO")]
     [SerializeField] private string weakToType1;
     [SerializeField] private string weakToType2;
@@ -64,8 +57,13 @@ public class Pokemon : MonoBehaviour
     [SerializeField] private string resistantToType3;
     [SerializeField] private string resistantToType4;
     public List<string> ressistantToList = new List<string>();
+    public Rigidbody2D rb;
+    private GameObject healthShown;
     void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
+        healthShown = Instantiate(healthBar, new Vector3(transform.position.x + (healthBar.transform.localScale.x * ((float)currentHealth / (float)maxHealth) / 2) - 0.5f, transform.position.y + 1, transform.position.z), Quaternion.identity);
+
         currentHealth = maxHealth;
         spriteRenderer = GetComponent<SpriteRenderer>();
 
@@ -88,17 +86,6 @@ public class Pokemon : MonoBehaviour
         AddToListResist(resistantToType4);
 
     }
-    void Update()
-    {
-        // check if player is dead
-        if (currentHealth <= 0)
-        {
-            Debug.Log("dead");
-            spriteRenderer.color = Color.white;
-        }
-
-
-    }
     void FixedUpdate()
     {
         // this is the code for creating the health bar, 
@@ -108,9 +95,13 @@ public class Pokemon : MonoBehaviour
 
         if (currentHealth > 0)
         {
-            GameObject healthShown = Instantiate(healthBar,new Vector3(transform.position.x + (healthBar.transform.localScale.x * ((float)currentHealth / (float)maxHealth)/2)-0.5f, transform.position.y + 1, transform.position.z), Quaternion.identity);
-            healthShown.transform.localScale = new Vector3(healthShown.transform.localScale.x*((float)currentHealth/(float)maxHealth), healthShown.transform.localScale.y, healthShown.transform.localScale.z);
-            Destroy(healthShown, 0.05f);
-        }        
+            healthShown.transform.position = new Vector3(transform.position.x + (healthBar.transform.localScale.x * ((float)currentHealth / (float)maxHealth)/2)-0.5f, transform.position.y + 1, transform.position.z);
+            healthShown.transform.localScale = new Vector3(healthBar.transform.localScale.x*((float)currentHealth/(float)maxHealth), healthShown.transform.localScale.y, healthShown.transform.localScale.z);
+            //Destroy(healthShown, 0.05f);
+        }
+        else
+        {
+            Destroy(healthShown);
+        }
     }
 }
